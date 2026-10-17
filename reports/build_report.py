@@ -393,7 +393,7 @@ def build_html(github, live):
          "Real-market insight cards. Charts: price distribution (histogram), products per keyword (bar), platform share (donut), products per price range."),
         ("02_brands", "Brands", "KPIs: total brands, top brand, highest-rated brand, best-visibility brand, average visibility. "
          "Charts: brand vs product count, brand vs average rating, top brands in top-10 positions, visibility score by brand."),
-        ("03_pricing", "Pricing", "KPIs: average, highest and lowest price, % discounted products. Charts: price distribution, price spread by keyword, "
+        ("03_pricing", "Pricing", "KPIs: average price, max price, lowest price, % discounted products. Charts: price distribution, price spread by keyword, "
          "price vs ranking (scatter), price vs rating (scatter), discount % by brand and by platform."),
         ("04_platforms", "Platforms", "KPIs: total platforms, best platform (rating), cheapest platform, platform with most products. Charts: platform vs "
          "product count, average price, average rating, average ranking, and brand distribution per platform (stacked bar)."),

@@ -187,7 +187,7 @@ def pricing():
     hi, lo = df.loc[df["price"].idxmax()], df.loc[df["price"].idxmin()]
     kpi_row([
         ("Average price", inr(k["avg_price"]), None),
-        ("Highest price", inr(k["max_price"]), f"{hi['title']} · {hi['platform']}"),
+        ("Max price", inr(k["max_price"]), f"{hi['title']} · {hi['platform']}"),
         ("Lowest price", inr(k["min_price"]), f"{lo['title']} · {lo['platform']}"),
         ("% discounted products", pct(kpis(f, API)["pct_discounted"]), API_NOTE),
     ])

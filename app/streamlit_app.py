@@ -13,13 +13,22 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import importlib
+
 import streamlit as st
 
 import config
-import queries
-import ui
-import views
-from queries import Filters
+import src.db
+
+# Streamlit only hot-reloads modules inside app/. config.py and src/ live at the project root, so after
+# a redeploy (Streamlit Cloud pulls new code without restarting) they could be stale; reload them each run.
+importlib.reload(config)
+importlib.reload(src.db)
+
+import queries  # noqa: E402
+import ui  # noqa: E402
+import views  # noqa: E402
+from queries import Filters  # noqa: E402
 
 st.set_page_config(page_title="Brand Visibility Intelligence", page_icon=":material/insights:", layout="wide")
 ui.install_theme()

@@ -1,0 +1,9 @@
+step,rows_before,rows_after,missing_before,missing_after
+standardize_columns,1520,1520,4316,4316
+convert_numeric,1520,1520,4316,4665
+invalidate_bad_values,1520,1520,4665,4691
+clean_text,1520,1520,4691,4691
+standardize_categories,1520,1520,4691,4670
+remove_duplicates,1520,1421,4670,4349
+cap_price_outliers,1421,1421,4349,4349
+impute_missing,1421,1421,4349,2452

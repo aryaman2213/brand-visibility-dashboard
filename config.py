@@ -84,18 +84,20 @@ PLATFORM_SUFFIXES = r"(\.co\.in|\.com|\.in|\s+india|\s+in)$"
 # --- Feature engineering ---------------------------------------------------
 # Brands matched (case-insensitive, whole word) in titles; otherwise the first word is used.
 KNOWN_BRANDS = [
-    "HP", "LG", "Philips", "Nike", "Boat", "Puma", "Samsung", "Dell", "Sony",
+    "HP", "LG", "Philips", "Nike", "boAt", "Puma", "Samsung", "Dell", "Sony",
     "Adidas", "Asics", "Reebok", "Skechers", "Campus", "Bajaj", "Prestige", "Pigeon",
     "Havells", "Inalsa", "Kent", "Agaro", "IFB", "Panasonic", "Godrej", "Morphy Richards",
     "Mi", "Xiaomi", "Redmi", "Ambrane", "Anker", "Realme", "OnePlus", "Portronics",
-    "Green Soul", "Featherlite", "Wakefit", "Sleepyhead", "Savya Home", "Ikea",
+    "Green Soul", "Featherlite", "Wakefit", "Sleepyhead", "Savya Home", "IKEA",
     "Decathlon", "Kalenji", "Whirlpool", "Haier", "Voltas Beko", "Lifelong", "Glen",
     "Preethi", "Kepler Brooks", "Nivia", "Bata", "Red Tape", "Sparx", "Asian", "Noise",
+    "Amazon Basics", "HRX",
 ]
 # Leading title words that describe the product, not the maker.
 GENERIC_TITLE_WORDS = {
     "men", "mens", "women", "womens", "unisex", "ergonomic", "office", "chair", "chairs",
     "the", "new", "premium", "high", "mesh", "running", "sports", "portable", "digital",
+    "air", "multi", "all", "allinone", "mah", "electric", "smart", "automatic", "wireless",
 }
 # Band upper bounds are exclusive; the last band is open-ended.
 PRICE_BANDS = [
@@ -111,10 +113,26 @@ RATING_BANDS = [
     (float("inf"), "4.5–5"),
 ]
 TOP_N_POSITION = 10
+# Review-count bands (upper bound exclusive). Fixed cut-offs rather than quantiles,
+# so a band means the same thing for every source and every refresh.
+REVIEW_BANDS = [
+    (1, "No reviews"),
+    (100, "Low (1–99)"),
+    (1_000, "Medium (100–999)"),
+    (float("inf"), "High (1,000+)"),
+]
 
 # --- Dashboard -------------------------------------------------------------
 # Brands/platforms with fewer listings are left out of "best average" rankings.
 MIN_LISTINGS_FOR_AVG = 3
-TOP_N_CHART = 15
-SOURCE_LABELS = {"api": "Google Shopping (API)", "csv": "Provided CSV"}
-SOURCE_COLORS = {"api": "#2a6fdb", "csv": "#9a9a9a"}
+# Platforms need more listings than brands before their averages are ranked.
+MIN_PLATFORM_LISTINGS = 5
+TOP_N_CHART = 12
+PIE_TOP_N = 7
+MATRIX_TOP_N = 8
+SNAPSHOT_DATE = "17 Oct 2026"
+SOURCE_LABELS = {"api": "Google Shopping", "csv": "Provided CSV"}
+SOURCE_COLORS = {"api": "#4f46e5", "csv": "#a3aab8"}
+# Categorical palette for charts (colour-blind friendly order).
+CHART_COLORS = ["#4f46e5", "#0ea5e9", "#f59e0b", "#10b981", "#ef4444",
+                "#8b5cf6", "#ec4899", "#14b8a6", "#f97316", "#64748b"]

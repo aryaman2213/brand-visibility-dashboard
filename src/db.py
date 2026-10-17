@@ -1,5 +1,11 @@
-"""SQLite storage. One products table (the fact table) plus summary views the
-dashboard and notebook query directly.
+"""SQLite storage.
+
+Tables
+    raw_products   the merged API + CSV rows exactly as extracted (text), for traceability
+    products       the cleaned, feature-engineered rows the analysis and dashboard use
+    cleaning_log   rows and missing cells before/after each cleaning step
+Views
+    brand_summary, platform_summary, keyword_summary   per-group metrics over products
 """
 import sqlite3
 from contextlib import closing
@@ -11,7 +17,33 @@ import config
 SCHEMA = """
 DROP VIEW IF EXISTS brand_summary;
 DROP VIEW IF EXISTS platform_summary;
+DROP VIEW IF EXISTS keyword_summary;
 DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS raw_products;
+DROP TABLE IF EXISTS cleaning_log;
+
+CREATE TABLE raw_products (
+    raw_key      INTEGER PRIMARY KEY,
+    data_source  TEXT NOT NULL,
+    keyword      TEXT,
+    title        TEXT,
+    price        TEXT,
+    raw_price    TEXT,
+    rating       TEXT,
+    reviews      TEXT,
+    platform     TEXT,
+    delivery     TEXT,
+    position     TEXT
+);
+
+CREATE TABLE cleaning_log (
+    step_order      INTEGER PRIMARY KEY,
+    step            TEXT    NOT NULL,
+    rows_before     INTEGER NOT NULL,
+    rows_after      INTEGER NOT NULL,
+    missing_before  INTEGER NOT NULL,
+    missing_after   INTEGER NOT NULL
+);
 
 CREATE TABLE products (
     product_key        INTEGER PRIMARY KEY,
@@ -63,6 +95,16 @@ SELECT platform,
        ROUND(AVG(position), 1)          AS avg_position,
        ROUND(AVG(discount_pct), 2)      AS avg_discount_pct
 FROM products GROUP BY platform;
+
+CREATE VIEW keyword_summary AS
+SELECT keyword, data_source,
+       COUNT(*)                         AS products,
+       ROUND(AVG(price), 2)             AS avg_price,
+       ROUND(AVG(rating), 2)            AS avg_rating,
+       ROUND(100.0 * AVG(has_discount), 1) AS pct_discounted,
+       COUNT(DISTINCT brand)            AS brands,
+       COUNT(DISTINCT platform)         AS platforms
+FROM products GROUP BY keyword, data_source;
 """
 
 TABLE_COLUMNS = [
@@ -78,13 +120,23 @@ def connect(path=config.DB_PATH):
     return sqlite3.connect(path)
 
 
-def write_products(df, path=config.DB_PATH):
-    out = df[TABLE_COLUMNS].copy()
+RAW_COLUMNS = ["data_source", "keyword", "title", "price", "raw_price", "rating",
+               "reviews", "platform", "delivery", "position"]
+
+
+def write_database(products, raw, cleaning_log, path=config.DB_PATH):
+    """Rebuild every table from scratch and return the number of product rows."""
+    out = products[TABLE_COLUMNS].copy()
     for col in out.select_dtypes(include="bool").columns:
         out[col] = out[col].astype(int)
+    raw_out = raw[RAW_COLUMNS].astype("string")
+    log_out = cleaning_log.rename_axis("step_order").reset_index()
+    log_out["step_order"] += 1
     with closing(connect(path)) as conn, conn:
         conn.executescript(SCHEMA)
         out.to_sql("products", conn, if_exists="append", index=False)
+        raw_out.to_sql("raw_products", conn, if_exists="append", index=False)
+        log_out.to_sql("cleaning_log", conn, if_exists="append", index=False)
     return len(out)
 
 

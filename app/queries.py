@@ -64,7 +64,7 @@ def kpis(f, extra=()):
                AVG(visibility_score)                                AS avg_visibility,
                100.0 * AVG(has_discount)                            AS pct_discounted,
                100.0 * AVG(is_top_10)                               AS pct_top_10,
-               COUNT(DISTINCT brand)                                AS brands,
+               COUNT(DISTINCT CASE WHEN brand != 'Unbranded' THEN brand END) AS brands,
                COUNT(DISTINCT platform)                             AS platforms
         FROM products{where}
     """, params)
@@ -107,7 +107,7 @@ def group_stats(f, by, min_listings=1, extra=()):
         FROM products{where}
         GROUP BY {by}
         HAVING COUNT(*) >= ?
-        ORDER BY listings DESC
+        ORDER BY listings DESC, name ASC
     """, params + (min_listings,))
     # An empty result comes back with object columns; keep metrics numeric so charts still work.
     # Empty or all-NULL columns come back as object dtype; keep metrics numeric for charts.
@@ -135,3 +135,33 @@ def price_band_order():
 
 def rating_band_order():
     return [label for _, label in config.RATING_BANDS]
+
+
+def market_facts():
+    """Headline facts from the Google Shopping data, independent of the sidebar filters."""
+    row = db.query("""
+        SELECT COUNT(*)                                                  AS products,
+               100.0 * AVG(price < 15000)                                AS pct_under_15k,
+               100.0 * AVG(has_discount)                                 AS pct_discounted,
+               AVG(CASE WHEN has_discount = 1 THEN discount_pct END)     AS avg_discount,
+               100.0 * AVG(reviews = 0)                                  AS pct_no_reviews,
+               100.0 * AVG(platform = 'Amazon')                          AS amazon_share,
+               100.0 * AVG(CASE WHEN platform = 'Amazon' THEN is_top_10 END) AS amazon_top10_rate,
+               100.0 * AVG(is_top_10)                                    AS overall_top10_rate,
+               100.0 * AVG(rating_imputed)                               AS pct_unrated
+        FROM products WHERE data_source = 'api'
+    """)
+    return row.iloc[0].to_dict()
+
+
+def dataset_facts():
+    row = db.query("""
+        SELECT COUNT(*) AS products, COUNT(DISTINCT keyword) AS keywords,
+               COUNT(DISTINCT platform) AS platforms,
+               COUNT(DISTINCT CASE WHEN brand != 'Unbranded' THEN brand END) AS brands,
+               SUM(data_source = 'api') AS api_products, SUM(data_source = 'csv') AS csv_products,
+               (SELECT COUNT(*) FROM raw_products WHERE data_source = 'api') AS api_raw,
+               (SELECT COUNT(*) FROM raw_products WHERE data_source = 'csv') AS csv_raw
+        FROM products
+    """)
+    return {k: int(v) for k, v in row.iloc[0].to_dict().items()}

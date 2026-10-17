@@ -52,6 +52,7 @@ def clean_text(df):
     df = df.copy()
     df["title"] = (df["title"].astype("string")
                    .str.replace(r"[^\w\s\-&./()+,'\"]", " ", regex=True)
+                   .str.replace(r"['\"]{2,}", " ", regex=True)
                    .str.replace(r"\s+", " ", regex=True).str.strip())
     df["keyword"] = df["keyword"].astype("string").str.strip().str.lower()
     return df
@@ -130,7 +131,8 @@ def impute_missing(df):
     df.loc[no_reviews, "reviews"] = 0
     for col in ["price", "rating", "reviews"]:
         df[col] = df[col].fillna(df.groupby(GROUP_KEYS)[col].transform("median"))
-    df["raw_price"] = df["raw_price"].fillna(df["price"])
+    # No original price means no visible discount; an original below the selling price is not a discount either.
+    df["raw_price"] = df["raw_price"].fillna(df["price"]).clip(lower=df["price"])
     df["rating"] = df["rating"].round(1)
     df["reviews"] = df["reviews"].round().astype("Int64")
     df["position"] = df["position"].astype("Int64")

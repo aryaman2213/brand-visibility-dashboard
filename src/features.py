@@ -24,10 +24,13 @@ def extract_brand(title):
     match = _BRAND_PATTERN.search(str(title))
     if match:
         return _BRAND_CANONICAL[match.group(1).lower()]
-    first = re.sub(r"[^\w]", "", str(title).split()[0]).lower()
-    if not first or first in config.GENERIC_TITLE_WORDS:
+    token = str(title).split()[0].strip(",.-")
+    first = re.sub(r"[^\w]", "", token).lower()
+    # Generic words and size/spec tokens ("27L", "10000mAh") are not brands.
+    if not first or first in config.GENERIC_TITLE_WORDS or any(ch.isdigit() for ch in first):
         return "Unbranded"
-    return str(title).split()[0].strip(",.-").title()
+    # Short all-caps names are acronyms (HRX, EDT, RIO): keep them as written.
+    return token if token.isupper() and len(token) <= 4 else token.title()
 
 
 def visibility_score(position):
@@ -55,7 +58,5 @@ def add_features(df):
     df["discount_amount"] = (df["raw_price"] - df["price"]).clip(lower=0).round(2)
     df["discount_pct"] = discount.round(2)
     df["has_discount"] = df["discount_pct"] > 0
-    df["review_engagement"] = pd.qcut(
-        df["reviews"].astype(float), q=3, labels=["Low", "Medium", "High"]
-    ).astype("string")
+    df["review_engagement"] = _band(df["reviews"].astype(float), config.REVIEW_BANDS).astype("string")
     return df

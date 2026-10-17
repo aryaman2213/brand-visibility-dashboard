@@ -4,7 +4,7 @@ Analyses how brands perform in e-commerce search results (ranking, pricing, disc
 competition) using **Google Shopping data pulled through SerpApi**, merged with the provided
 `brand_dirty_dataset.csv`, cleaned, stored in **SQLite** and explored in a **Streamlit** dashboard.
 
-**Live dashboard:** https://brand-visibility-intelligence.streamlit.app
+**Live dashboard:** https://brand-visibility-intelligence.streamlit.app  
 **Project report:** [`reports/Brand_Visibility_Intelligence_Report.pdf`](reports/Brand_Visibility_Intelligence_Report.pdf)
 
 ![Dashboard overview](reports/screenshots/01_overview.png)
@@ -32,7 +32,7 @@ dirty CSV ────┘                            └─ data/brand_visibilit
 
 | Path | Role |
 |---|---|
-| `config.py` | Paths, API parameters, keywords, and every cleaning, feature and dashboard rule (nothing is hard-coded elsewhere) |
+| `config.py` | Paths, API parameters, keywords, and the cleaning, feature and dashboard rules (thresholds, bands, aliases, links) |
 | `src/extract.py` | SerpApi calls, per-keyword JSON cache, flattening to rows |
 | `src/load.py` | Reads the CSV, aligns it to the shared schema, merges with `concat` |
 | `src/clean.py` | Eight ordered cleaning steps with a per-step change log |

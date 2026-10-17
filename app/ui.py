@@ -52,7 +52,16 @@ h1, h2, h3 { letter-spacing: -0.02em; color: %(ink)s; }
 .insight .txt { color: #334155; font-size: 0.88rem; line-height: 1.45; margin-top: 0.15rem; }
 
 /* sidebar */
-section[data-testid="stSidebar"] { background: #ffffff; border-right: 1px solid #e6e8ef; width: 310px !important; min-width: 310px !important; }
+section[data-testid="stSidebar"] { background: #ffffff; border-right: 1px solid #e6e8ef; }
+/* wider sidebar on desktop only; on phones Streamlit collapses it into a drawer */
+@media (min-width: 992px) {
+  section[data-testid="stSidebar"][aria-expanded="true"] { width: 310px !important; min-width: 310px !important; }
+}
+@media (max-width: 640px) {
+  .block-container { padding-top: 3.6rem; padding-left: 1rem; padding-right: 1rem; }
+  .hero h1 { font-size: 1.6rem; }
+  [data-testid="stMetricValue"] { font-size: 1.3rem; }
+}
 section[data-testid="stSidebar"] h2 { font-size: 1.05rem; }
 .sidebar-note { color: %(muted)s; font-size: 0.78rem; line-height: 1.45; }
 </style>

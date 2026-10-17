@@ -20,7 +20,7 @@ def run(refresh_api=False):
     final = features.add_features(cleaned)
 
     config.PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-    final.to_csv(config.CLEAN_CSV_PATH, index=False)
+    db.to_table(final).to_csv(config.CLEAN_CSV_PATH, index=False)
     report.to_csv(config.PROCESSED_DIR / "cleaning_report.csv", index=False)
     rows = db.write_database(final, merged, report)
     logging.info("Wrote %d rows to %s and %s", rows, config.CLEAN_CSV_PATH.name, config.DB_PATH.name)

@@ -124,11 +124,18 @@ RAW_COLUMNS = ["data_source", "keyword", "title", "price", "raw_price", "rating"
                "reviews", "platform", "delivery", "position"]
 
 
-def write_database(products, raw, cleaning_log, path=config.DB_PATH):
-    """Rebuild every table from scratch and return the number of product rows."""
+def to_table(products):
+    """The products frame exactly as stored: TABLE_COLUMNS in order, flags as 0/1.
+    The clean CSV deliverable is written from this too, so the two always match."""
     out = products[TABLE_COLUMNS].copy()
     for col in out.select_dtypes(include="bool").columns:
         out[col] = out[col].astype(int)
+    return out
+
+
+def write_database(products, raw, cleaning_log, path=config.DB_PATH):
+    """Rebuild every table from scratch and return the number of product rows."""
+    out = to_table(products)
     raw_out = raw[RAW_COLUMNS].astype("string")
     log_out = cleaning_log.rename_axis("step_order").reset_index()
     log_out["step_order"] += 1

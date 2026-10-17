@@ -85,7 +85,7 @@ def overview():
     k = kpis(f)
     hero("Executive overview", "How brands show up in search",
          "Product listings from Google Shopping search results (via SerpApi) merged with the provided dataset, "
-         "cleaned and stored in SQLite. Use the filters on the left; every number on every page is re-queried.",
+         "cleaned and stored in SQLite. Use the filters in the sidebar; every number on every page is re-queried.",
          [f"{k['products']:,} products in view", f"{k['brands']} brands", f"{k['platforms']} platforms",
           f"Snapshot {config.SNAPSHOT_DATE}"])
     kpi_row([
@@ -406,7 +406,7 @@ def about():
             st.markdown(
                 "Extract (SerpApi JSON, cached) → load CSV → merge with `concat` → clean (8 logged steps) → "
                 "features (brand, visibility score, price/rating/review bands, discount) → SQLite → this dashboard.\n\n"
-                "Each filter on the left is added to a parameterised SQL `WHERE` clause, so every chart is a live query."
+                "Each sidebar filter is added to a parameterised SQL `WHERE` clause, so every chart is a live query."
             )
     with right:
         with card("Read the numbers with these in mind"):

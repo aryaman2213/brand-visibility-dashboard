@@ -111,3 +111,10 @@ RATING_BANDS = [
     (float("inf"), "4.5–5"),
 ]
 TOP_N_POSITION = 10
+
+# --- Dashboard -------------------------------------------------------------
+# Brands/platforms with fewer listings are left out of "best average" rankings.
+MIN_LISTINGS_FOR_AVG = 3
+TOP_N_CHART = 15
+SOURCE_LABELS = {"api": "Google Shopping (API)", "csv": "Provided CSV"}
+SOURCE_COLORS = {"api": "#2a6fdb", "csv": "#9a9a9a"}

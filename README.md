@@ -20,6 +20,9 @@ dirty CSV ────┘                            └─ data/brand_visibilit
 | `src/features.py` | Brand, visibility score, price/rating bands, discount |
 | `src/db.py` | SQLite schema (`products` table, `brand_summary` / `platform_summary` views) |
 | `pipeline.py` | Runs everything end to end |
+| `notebooks/eda.ipynb` | Answers the 30 cleaning + 30 EDA questions; charts saved to `reports/figures/` |
+| `app/queries.py` | All dashboard SQL; sidebar filters become one parameterised `WHERE` clause |
+| `app/streamlit_app.py` | Streamlit dashboard (6 tabs) |
 
 ## Setup
 
@@ -27,7 +30,21 @@ dirty CSV ────┘                            └─ data/brand_visibilit
 pip install -r requirements.txt
 cp .env.example .env   # then add your SerpApi key
 python pipeline.py     # add --refresh-api to re-fetch instead of using the cache
+streamlit run app/streamlit_app.py
 ```
+
+## Dashboard
+
+Six tabs (Overview, Brand insights, Pricing, Platforms, Visibility & ranking, Product explorer). The sidebar
+filters (data source, keyword, brand, platform, price range, rating range) and the explorer's title search are
+turned into a parameterised SQL `WHERE` clause, so every KPI and chart is a fresh SQLite query.
+
+Two display rules keep the numbers honest:
+- **Discount and ranking averages use Google Shopping rows only.** The CSV has no original prices (so every CSV
+  discount is 0) and no real search positions (its positions are row order). Mixing them in would make Amazon's
+  average discount ~1% and its average position ~100. Charts that do this say "Google Shopping" in the title.
+- **Average ratings use real ratings only.** Filled-in ratings are left out, and "best rated" rankings need at
+  least 3 rated listings (`MIN_LISTINGS_FOR_AVG` in `config.py`).
 
 ## Assumptions
 

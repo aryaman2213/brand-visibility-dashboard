@@ -35,9 +35,11 @@ h1, h2, h3 { letter-spacing: -0.02em; color: %(ink)s; }
 /* KPI cards */
 [data-testid="stMetric"] { background: #ffffff; border: 1px solid #e6e8ef; border-radius: 14px;
     padding: 0.9rem 1rem 0.8rem 1rem; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04); }
-[data-testid="stMetricLabel"] p { color: %(muted)s; font-size: 0.8rem; font-weight: 500; }
-[data-testid="stMetricValue"] { color: %(ink)s; font-size: 1.55rem; font-weight: 700; }
-[data-testid="stMetricValue"] > div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+[data-testid="stMetricLabel"] p { color: %(muted)s; font-size: 0.8rem; font-weight: 500; white-space: normal; }
+[data-testid="stMetricLabel"] > div { overflow: visible; }
+/* scale numbers with the window so five cards in a row never truncate */
+[data-testid="stMetricValue"] { color: %(ink)s; font-size: clamp(1.05rem, 1.55vw, 1.55rem); font-weight: 700; }
+[data-testid="stMetricValue"] > div { white-space: nowrap; overflow: visible; }
 
 /* chart cards */
 [class*="st-key-card-"] { background: #ffffff; border-radius: 14px !important; border-color: #e6e8ef !important;
@@ -57,10 +59,14 @@ section[data-testid="stSidebar"] { background: #ffffff; border-right: 1px solid 
 @media (min-width: 992px) {
   section[data-testid="stSidebar"][aria-expanded="true"] { width: 310px !important; min-width: 310px !important; }
 }
+@media (max-width: 1180px) {
+  [data-testid="stMetric"] { padding: 0.75rem 0.7rem 0.65rem 0.7rem; }
+  [data-testid="stMetricValue"] { font-size: clamp(0.98rem, 1.7vw, 1.3rem); }
+}
 @media (max-width: 640px) {
   .block-container { padding-top: 3.6rem; padding-left: 1rem; padding-right: 1rem; }
   .hero h1 { font-size: 1.6rem; }
-  [data-testid="stMetricValue"] { font-size: 1.3rem; }
+  [data-testid="stMetricValue"] { font-size: 1.35rem; }
 }
 section[data-testid="stSidebar"] h2 { font-size: 1.05rem; }
 .sidebar-note { color: %(muted)s; font-size: 0.78rem; line-height: 1.45; }
@@ -138,6 +144,13 @@ def inr(value):
 
 def num(value, digits=2):
     return "–" if value is None or value != value else f"{value:,.{digits}f}"
+
+
+def compact(value):
+    """1,234 -> 1,234; 2,956,040 -> 2.96M (exact figure goes in the tooltip)."""
+    if value is None or value != value:
+        return "–"
+    return f"{value / 1e6:.2f}M" if value >= 1e6 else f"{value:,.0f}"
 
 
 def pct(value):

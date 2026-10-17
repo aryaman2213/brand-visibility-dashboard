@@ -4,7 +4,7 @@ Analyses how brands perform in e-commerce search results (ranking, pricing, disc
 competition) using **Google Shopping data pulled through SerpApi**, merged with the provided
 `brand_dirty_dataset.csv`, cleaned, stored in **SQLite** and explored in a **Streamlit** dashboard.
 
-**Live dashboard:** _LIVE_URL_
+**Live dashboard:** https://brand-visibility-intelligence.streamlit.app
 **Project report:** [`reports/Brand_Visibility_Intelligence_Report.pdf`](reports/Brand_Visibility_Intelligence_Report.pdf)
 
 ![Dashboard overview](reports/screenshots/01_overview.png)

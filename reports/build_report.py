@@ -4,7 +4,7 @@ Numbers and tables are read from the SQLite database and the written answers fro
 notebooks/eda.ipynb, so the report always matches the analysis. The PDF is printed
 with headless Chrome through Playwright (pip install playwright).
 
-    python reports/build_report.py --github <repo url> --live <dashboard url>
+    python reports/build_report.py          # links default to config.GITHUB_URL / config.LIVE_URL
 """
 import argparse
 import html
@@ -49,6 +49,8 @@ def notebook_answers():
 
 
 def md(text):
+    # Python-Markdown needs a blank line before a list; Jupyter doesn't, so the notebook text may lack one.
+    text = re.sub(r"([^\n])\n(?=(\d+\.|-) )", r"\1\n\n", text)
     return markdown.markdown(text, extensions=["tables"])
 
 
@@ -507,8 +509,8 @@ def print_pdf(html_path, pdf_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--github", default="")
-    parser.add_argument("--live", default="")
+    parser.add_argument("--github", default=config.GITHUB_URL)
+    parser.add_argument("--live", default=config.LIVE_URL)
     args = parser.parse_args()
     BUILD.mkdir(exist_ok=True)
     html_path = BUILD / "report.html"

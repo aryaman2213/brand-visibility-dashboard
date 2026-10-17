@@ -49,6 +49,8 @@ def sidebar_filters():
         st.divider()
         st.markdown(f'<p class="sidebar-note">Google Shopping data via SerpApi (India, {config.SNAPSHOT_DATE}) '
                     'merged with the provided CSV and stored in SQLite.</p>', unsafe_allow_html=True)
+        st.markdown(f'<p class="sidebar-note"><a href="{config.GITHUB_URL}" target="_blank">Source code</a> · '
+                    f'<a href="{config.REPORT_URL}" target="_blank">Project report (PDF)</a></p>', unsafe_allow_html=True)
     return Filters(tuple(data_source), tuple(keyword), tuple(brand), tuple(platform),
                    tuple(price_range), tuple(rating_range))
 

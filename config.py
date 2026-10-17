@@ -131,6 +131,9 @@ TOP_N_CHART = 12
 PIE_TOP_N = 7
 MATRIX_TOP_N = 8
 SNAPSHOT_DATE = "17 Oct 2026"
+GITHUB_URL = "https://github.com/aryaman2213/brand-visibility-dashboard"
+LIVE_URL = "https://brand-visibility-intelligence.streamlit.app"
+REPORT_URL = GITHUB_URL + "/blob/main/reports/Brand_Visibility_Intelligence_Report.pdf"
 SOURCE_LABELS = {"api": "Google Shopping", "csv": "Provided CSV"}
 SOURCE_COLORS = {"api": "#4f46e5", "csv": "#a3aab8"}
 # Categorical palette for charts (colour-blind friendly order).

@@ -6,7 +6,7 @@ import streamlit as st
 import config
 import queries
 from queries import Filters
-from ui import ACCENT, SOURCE_COLORS, card, chart_card, hero, inr, insight_cards, kpi_row, num, pct
+from ui import ACCENT, SOURCE_COLORS, card, chart_card, compact, hero, inr, insight_cards, kpi_row, num, pct
 
 API = (queries.API_ONLY,)
 API_NOTE = "Google Shopping only: the CSV has no real search positions or original prices."
@@ -92,7 +92,7 @@ def overview():
         ("Total products", f"{k['products']:,}", None),
         ("Average price", inr(k["avg_price"]), None),
         ("Average rating", num(k["avg_rating"]), "Real ratings only; filled-in values are excluded"),
-        ("Total reviews", f"{k['total_reviews'] or 0:,.0f}", None),
+        ("Total reviews", compact(k["total_reviews"] or 0), f"{k['total_reviews'] or 0:,.0f} reviews (real counts only)"),
         ("Avg visibility score", num(k["avg_visibility"], 1), "100 / log2(position + 1): 100 at #1, 63 at #2, 29 at #10"),
     ])
 
@@ -135,7 +135,7 @@ def overview():
         bands["price_range"] = bands["price_range"].str.replace(" (", "<br>(", regex=False)
         fig = px.bar(bands, x="price_range", y="products", labels={"price_range": "", "products": "Products"},
                      color_discrete_sequence=[ACCENT])
-        chart_card(fig, "Products per price range", "Fixed price bands defined in config.py")
+        chart_card(fig, "Products per price range", "Budget < ₹5k · Mid-range ₹5k–15k · Premium ₹15k–35k · Luxury ₹35k+")
 
 
 def brands():
@@ -408,6 +408,7 @@ def about():
                 "features (brand, visibility score, price/rating/review bands, discount) → SQLite → this dashboard.\n\n"
                 "Each sidebar filter is added to a parameterised SQL `WHERE` clause, so every chart is a live query."
             )
+            st.markdown(f"[Source code on GitHub]({config.GITHUB_URL}) · [Project report (PDF)]({config.REPORT_URL})")
     with right:
         with card("Read the numbers with these in mind"):
             st.markdown("##### Read the numbers with these in mind")

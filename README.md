@@ -1,5 +1,10 @@
 # Brand Visibility Intelligence Dashboard
 
+[![Streamlit app](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://brand-visibility-intelligence.streamlit.app)
+![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-database-003B57?logo=sqlite&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+
 Analyses how brands perform in e-commerce search results (ranking, pricing, discounts and platform
 competition) using **Google Shopping data pulled through SerpApi**, merged with the provided
 `brand_dirty_dataset.csv`, cleaned, stored in **SQLite** and explored in a **Streamlit** dashboard.
@@ -117,3 +122,30 @@ Two display rules keep the numbers honest:
 | Project report | `reports/Brand_Visibility_Intelligence_Report.pdf` |
 | Dashboard screenshots | `reports/screenshots/` |
 | SQL database | `data/brand_visibility.db` |
+
+## Tech stack
+
+| Layer | Tools |
+|---|---|
+| Data extraction | Python, Requests, SerpApi (Google Shopping engine) |
+| Cleaning and features | Pandas, NumPy |
+| Storage | SQLite (`sqlite3`) |
+| Analysis | Jupyter, Matplotlib, Seaborn, SciPy, scikit-learn |
+| Dashboard | Streamlit, Plotly, deployed on Streamlit Community Cloud |
+
+## Data sources
+
+- **Google Shopping results** retrieved through [SerpApi](https://serpapi.com/google-shopping-api) on 17 Oct 2026
+  (India locale). The raw responses are cached in `data/raw/serpapi/`.
+- **`brand_dirty_dataset.csv`**, the dataset provided with the project brief.
+
+## Author
+
+**Aryaman Bhatnagar** · [GitHub @aryaman2213](https://github.com/aryaman2213)
+
+Built as a capstone project for the GUVI data science programme.
+
+## License
+
+The code is released under the [MIT License](LICENSE). Product listings belong to their respective sellers and are
+used here for analysis only.
